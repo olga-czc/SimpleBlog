@@ -22,6 +22,9 @@ app.listen(3000);
 // logger
 app.use(morgan('dev'));
 
+// middleware & static files
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     const blogs = [
         {title: 'Yoshi finds eggs', snippet: 'Lorem ipsum dolor sit amet consectetur'},
