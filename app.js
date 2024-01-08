@@ -1,13 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const Blog = require('./models/blog')
 
 const app = express();
 
 //connect to mongodb
-const dbURI = 'mongodb+srv://test:qwert12345@nodeblog.nn3bhvv.mongodb.net/?retryWrites=true&w=majority';
+const dbURI = 'mongodb+srv://admin:qwert12345@nodeblog.nn3bhvv.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(dbURI)
-    .then((result) => console.log('connected to db'))
+    .then((result) => app.listen(3000))
     .catch((err) => console.log(err));
 
     // register view engine
@@ -31,6 +32,43 @@ app.use(morgan('dev'));
 
 // middleware & static files
 app.use(express.static('public'));
+
+// mongoose and mongo sand box
+app.get('/add-blog', (req, res) => {
+    const blog = new Blog({
+        title: 'new blog 2',
+        snippet: 'about my new blog',
+        body: 'more about my blog'
+    });
+
+    blog.save()
+        .then((result) => {
+            res.send(result)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+})
+
+app.get('/all-blogs', (req, res) => {
+   Blog.find()
+   .then((result) => {
+        res.send(result)
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+});
+
+app.get('/single-blog', (req, res) => {
+    Blog.findById('659c4b46ad649b8553015b29')
+    .then((result) => {
+         res.send(result)
+     })
+     .catch((err) => {
+         console.log(err)
+     });
+ });
 
 app.get('/', (req, res) => {
     const blogs = [
