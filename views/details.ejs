@@ -13,8 +13,9 @@
                 <p><%= blog.body %></p>
 
             </div>
-            <a class="delete" data-doc="<%= blog._id %>">delete</a>
-
+            <a class="delete" data-doc="<%= blog._id %>">
+                <img src="/trash-can.png" alt="delete icon" width="27px">
+            </a>
         </div>
 
         <%- include('./partials/footer.ejs') %>
