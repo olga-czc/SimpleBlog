@@ -8,10 +8,10 @@ run:
 ## Snapshots 
 
 All Blogs
-![snapshot](/public/image1.png "All Blogs")
+![snapshot](public/image1.png "All Blogs")
 
 Blog Detail
-![snapshot](/public/image3.png "Detail")
+![snapshot](image3.png "Detail")
 
 Add new blog
 ![snapshot](/public/image2.png "Add new blog")
