@@ -32,58 +32,106 @@ app.use(morgan('dev'));
 
 // middleware & static files
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true}));
 
-// mongoose and mongo sand box
-app.get('/add-blog', (req, res) => {
-    const blog = new Blog({
-        title: 'new blog 2',
-        snippet: 'about my new blog',
-        body: 'more about my blog'
-    });
+// // mongoose and mongo sand box
+// app.get('/add-blog', (req, res) => {
+//     const blog = new Blog({
+//         title: 'new blog 2',
+//         snippet: 'about my new blog',
+//         body: 'more about my blog'
+//     });
 
-    blog.save()
-        .then((result) => {
-            res.send(result)
-        })
-        .catch((err) => {
-            console.log(err)
-        });
-})
+//     blog.save()
+//         .then((result) => {
+//             res.send(result)
+//         })
+//         .catch((err) => {
+//             console.log(err)
+//         });
+// })
 
-app.get('/all-blogs', (req, res) => {
-   Blog.find()
+// app.get('/all-blogs', (req, res) => {
+//    Blog.find()
+//    .then((result) => {
+//         res.send(result)
+//     })
+//     .catch((err) => {
+//         console.log(err)
+//     });
+// });
+
+// app.get('/single-blog', (req, res) => {
+//     Blog.findById('659c4b46ad649b8553015b29')
+//     .then((result) => {
+//          res.send(result)
+//      })
+//      .catch((err) => {
+//          console.log(err)
+//      });
+//  });
+
+app.get('/', (req, res) => {
+    res.redirect('blogs');
+    // const blogs = [
+    //     {title: 'Yoshi finds eggs', snippet: 'Lorem ipsum dolor sit amet consectetur'},
+    //     {title: 'Mario finds stars', snippet: 'Lorem ipsum dolor sit amet consectetur'},
+    //     {title: 'How to defeat bowser', snippet: 'Lorem ipsum dolor sit amet consectetur'},
+    // ];
+    // // content type and status code set automatically
+    // // res.send('<p>Home<p>');
+    // // res.sendFile('./views/index.html', {root: __dirname});
+    // res.render('index', {title: 'Home', blogs});
+});
+
+app.get('/about', (req, res) => {
+    res.render('about', {title: 'About'});
+});
+
+app.get('/blogs', (req, res) => {
+    Blog.find().sort({createdAt: -1})
    .then((result) => {
-        res.send(result)
+        res.render('index', {title: 'All blogs', blogs: result});
     })
     .catch((err) => {
         console.log(err)
     });
 });
 
-app.get('/single-blog', (req, res) => {
-    Blog.findById('659c4b46ad649b8553015b29')
-    .then((result) => {
-         res.send(result)
-     })
-     .catch((err) => {
-         console.log(err)
-     });
- });
+app.post('/blogs', (req, res) => {
+    const blog = new Blog(req.body);
+    blog.save()
+   .then((result) => {
+        res.redirect('/blogs');
 
-app.get('/', (req, res) => {
-    const blogs = [
-        {title: 'Yoshi finds eggs', snippet: 'Lorem ipsum dolor sit amet consectetur'},
-        {title: 'Mario finds stars', snippet: 'Lorem ipsum dolor sit amet consectetur'},
-        {title: 'How to defeat bowser', snippet: 'Lorem ipsum dolor sit amet consectetur'},
-    ];
-    // content type and status code set automatically
-    // res.send('<p>Home<p>');
-    // res.sendFile('./views/index.html', {root: __dirname});
-    res.render('index', {title: 'Home', blogs});
+    })
+    .catch((err) => {
+        console.log(err)
+    });
 });
 
-app.get('/about', (req, res) => {
-    res.render('about', {title: 'About'});
+app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+
+    Blog.findById(id)
+   .then((result) => {
+        res.render('details', {blog: result, title: 'Blog Details'});
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+});
+
+app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+
+    Blog.findByIdAndDelete(id)
+   .then((result) => {
+        res.json({redirect: '/blogs'});
+    })
+    .catch((err) => {
+        console.log(err)
+    });
 });
 
 app.get('/blogs/create', (req, res) => {
